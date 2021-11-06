@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пользователи</title>
+
+</head>
+<body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<div>
+    <input placeholder="Поиск" oninput="search(this)">
+</div>
+<table border="1px" id='table_users'>
+    <caption>
+        Основной вывод
+    </caption>
+    <tr>
+        <th>
+            <button sort_to="none" id="email" onclick="sort(this)">email -</button>
+        </th>
+        <th><button sort_to="none" id="phone_number" onclick="sort(this)">phone -</button></th>
+        <th>message</th>
+    </tr>
+    {% for user in context.list_of_users %}
+    <tr>
+        <td>{{ user.email }}</td>
+        <td>{{ user.phone_number }}</td>
+        <td>{{ user.message }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<script>
+    function replace_block(data) {
+        var table = document.getElementById("table_users");
+
+        while (table.rows.length > 1) {
+            table.deleteRow(1);
+        }
+        for (const el in data.list_of_users) {
+            els = data.list_of_users[el]
+            tr = `
+            <tr>
+                <td>${els.email}</td>
+                <td>${els.phone_number}</td>
+                <td>${els.message}</td>
+            </tr>`
+            table.innerHTML += tr
+        }
+    }
+
+    function get_filter(field = '', to_ = '', search_value = '') {
+        console.log(search_value)
+        theUrl = '/users/api/filter?field=' + field + '&to_=' + to_ + '&search_value=' + search_value
+        $.ajax({
+            url: theUrl,
+        }).done(function (data) {
+            replace_block(data)
+        });
+    }
+
+    function sort(field) {
+        f = field.getAttribute('id')
+        sort_to = field.getAttribute('sort_to')
+        console.log(f, sort_to)
+        to_ = 'none'
+        switch (sort_to) {
+            case 'none':
+                to_ = 'up'
+                field.innerText = 'email /\\'
+                break
+            case 'up':
+                to_ = 'down'
+                field.innerText = 'email \\/'
+                break
+            case 'down':
+                to_ = 'none'
+                field.innerText = 'email -'
+                break
+        }
+        field.setAttribute('sort_to', to_)
+        get_filter(f, to_)
+    }
+
+    function search(el) {
+        get_filter('', '', el.value)
+    }
+</script>
+
+</body>
+</html>

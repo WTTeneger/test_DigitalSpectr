@@ -1,0 +1,9 @@
+Django
+django-solo
+docker
+psycopg2-binary
+pillow
+gunicorn
+djangorestframework
+markdown
+django-filter
