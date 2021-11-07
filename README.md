@@ -47,9 +47,17 @@ http://localhost/users/api/filter/
 ____
 ###использовались библиотеки:
 Django
+
 docker
+
 psycopg2-binary
+
 gunicorn
+
 djangorestframework
+
 markdown
+
 django-filter
+____
+Логами не обкладовал, есть принты
